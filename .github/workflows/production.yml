@@ -9,11 +9,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Check out repository and recursively initialize submodules
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      
-      - name: Run a multi-line script
+    
+      # List files in submodules as a sanity check
+      - name: List files in submdodules
         run: |
           ls infrastructure
           ls website
+     
+      # Set up node.js
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+       
+      # Build website code
+      - name: Build website
+        run: |
+          cd website
+          npm install
+          npm run build
+      
+      # Build infrastructure code
+      - name: Build infrastructure
+        run: |
+          cd infrastructure
+          npm install
+          npm run build
+      
+      # List build files as a sanity check
+      - name: List build files
+        run: |
+          ls website/build
