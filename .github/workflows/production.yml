@@ -43,7 +43,6 @@ jobs:
       # List build files as a sanity check
       - name: List build files
         run: |
-          ls infrastructure/build
           ls website/build
           
       # Set up CDK
