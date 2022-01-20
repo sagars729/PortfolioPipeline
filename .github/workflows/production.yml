@@ -21,10 +21,23 @@ jobs:
         run: |
           ls infrastructure
           ls website
-     
+
       # Set up node.js
       - name: Setup Node.js environment
         uses: actions/setup-node@v2.5.1
+                 
+      # Set up CDK
+      - name: Set Up CDK
+        run: npm install -g aws-cdk
+
+      # AWS Sanity Check
+      - name: AWS Sanity Check
+        run: |
+          aws s3 ls dev.sagardsaxena.com
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
        
       # Build website code
       - name: Build website
@@ -44,10 +57,6 @@ jobs:
       - name: List build files
         run: |
           ls website/build
-          
-      # Set up CDK
-      - name: Set Up CDK
-        run: npm install -g aws-cdk
 
       # Synthesize CDK
       - name: Synth CDK
