@@ -53,11 +53,11 @@ jobs:
       - name: Synth CDK
         run: |
           cd infrastructure
-          cdk synth --region ${{ secrets.AWS_REGION }} --targetAccount ${{ secrets.AWS_ACCOUNT_ID }} --output build/cdk.out
+          cdk synth --output build/cdk.out
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_TARGET_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
