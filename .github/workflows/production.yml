@@ -3,6 +3,8 @@ name: DeployToProd
 on:
   workflow_dispatch:
     branches: [ main ]
+  push:
+    branches: [ main ]
 
 jobs:
   build:
@@ -41,4 +43,10 @@ jobs:
       # List build files as a sanity check
       - name: List build files
         run: |
+          ls infrastructure/build
           ls website/build
+          
+      # Set up CDK
+      - name: Set Up CDK
+        run: npm install -g aws-cdk
+
