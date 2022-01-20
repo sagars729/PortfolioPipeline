@@ -1,3 +1,6 @@
 [submodule "website"]
 	path = website
 	url = git@github.com:sagars729/PortfolioReactApp.git
+[submodule "infrastructure"]
+	path = infrastructure
+	url = git@github.com:sagars729/PortfolioCDK.git
