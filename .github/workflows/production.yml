@@ -40,7 +40,7 @@ jobs:
        
       # Build website code
       - name: Build website
-        working-directory: infrastructure
+        working-directory: website
         run: |
           npm install
           npm run build
