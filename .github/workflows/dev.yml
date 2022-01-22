@@ -1,0 +1,81 @@
+name: DeployToDev
+
+on:
+  workflow_dispatch:
+    branches: [ dev ]
+  push:
+    branches: [ dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out repository and recursively initialize submodules
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+    
+      # List files in submodules as a sanity check
+      - name: List files in submdodules
+        run: |
+          ls infrastructure
+          ls website
+
+      # Set up node.js
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.5.1
+                 
+      # Set up CDK
+      - name: Set Up CDK
+        run: npm install -g aws-cdk
+
+      # AWS Sanity Check
+      - name: AWS Sanity Check
+        run: aws s3 ls dev.sagardsaxena.com
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+       
+      # Build website code
+      - name: Build website
+        working-directory: website
+        run: |
+          npm install
+          npm run build
+      
+      # Build infrastructure code
+      - name: Build infrastructure
+        working-directory: infrastructure
+        run: |
+          npm install
+          npm run build
+      
+      # List build files as a sanity check
+      - name: List build files
+        run: ls website/build
+
+      # Synthesize CDK
+      - name: Synth CDK
+        working-directory: infrastructure
+        run: cdk synth --output build/cdk.out
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_TARGET_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+
+      # Deploy CDK
+      - name: Deploy CDK
+        working-directory: infrastructure
+        run: cdk deploy --require-approval never
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_TARGET_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
