@@ -1,10 +1,10 @@
-name: DeployToProd
+name: DeployToDev
 
 on:
   workflow_dispatch:
-    branches: [ main ]
+    branches: [ dev ]
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
   build:
